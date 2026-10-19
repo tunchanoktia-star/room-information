@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room Information | True Digital Park</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #24332c;
+      background: #f7f9f7;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      color: #43865c;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: clamp(28px, 5vw, 40px);
+    }
+
+    .intro {
+      color: #69766e;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .zone-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .zone-card {
+      width: 100%;
+      min-height: 150px;
+      padding: 24px;
+      text-align: left;
+      border: 1px solid #dfe7e0;
+      border-radius: 16px;
+      background: white;
+      color: inherit;
+      cursor: pointer;
+      transition: border-color .2s, background .2s,
+                  transform .2s, box-shadow .2s;
+    }
+
+    .zone-card:hover {
+      transform: translateY(-2px);
+      border-color: #8bb99a;
+    }
+
+    .zone-card.active {
+      background: #edf7ef;
+      border: 2px solid #43865c;
+      padding: 23px;
+      box-shadow: 0 6px 20px #244d3010;
+    }
+
+    .zone-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      background: #edf3ee;
+      font-size: 21px;
+    }
+
+    .active .zone-icon {
+      background: #d7eadb;
+    }
+
+    .zone-title {
+      display: block;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .zone-description {
+      color: #69766e;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .selected-label {
+      display: inline-block;
+      margin-top: 14px;
+      color: #347449;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .details {
+      margin-top: 26px;
+      padding: 26px;
+      background: white;
+      border: 1px solid #e0e7e1;
+      border-radius: 16px;
+    }
+
+    .details h2 {
+      margin: 0 0 8px;
+      font-size: 25px;
+    }
+
+    .details-intro {
+      margin: 0 0 22px;
+      color: #69766e;
+      line-height: 1.6;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .resource {
+      padding: 18px;
+      border: 1px solid #e2e9e3;
+      border-radius: 12px;
+      background: #fbfcfb;
+    }
+
+    .resource h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .resource p {
+      margin: 0;
+      color: #69766e;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .resource a {
+      display: inline-block;
+      margin-top: 14px;
+      color: #347449;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .resource a:hover {
+      text-decoration: underline;
+    }
+
+    .note {
+      margin-top: 20px;
+      color: #879188;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 24px 14px;
+      }
+
+      .zone-grid,
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .details {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="eyebrow">Venue Guide</div>
+    <h1>Room Information</h1>
+    <p class="intro">
+      Select a zone to explore room information,
+      floor plans and available equipment.
+    </p>
+
+    <section class="zone-grid" aria-label="Select a zone">
+      <button class="zone-card active"
+        id="eastCard"
+        type="button"
+        aria-pressed="true"
+        onclick="selectZone('east')">
+
+        <span class="zone-icon">◫</span>
+        <span class="zone-title">East Zone</span>
+        <span class="zone-description">
+          Explore rooms and facilities in the East Zone.
+        </span>
+        <span class="selected-label" id="eastLabel">
+          ✓ SELECTED
+        </span>
+      </button>
+
+      <button class="zone-card"
+        id="westCard"
+        type="button"
+        aria-pressed="false"
+        onclick="selectZone('west')">
+
+        <span class="zone-icon">▤</span>
+        <span class="zone-title">West Zone</span>
+        <span class="zone-description">
+          Explore rooms and facilities in the West Zone.
+        </span>
+        <span class="selected-label"
+          id="westLabel" hidden>
+          ✓ SELECTED
+        </span>
+      </button>
+    </section>
+
+    <section class="details" aria-live="polite">
+      <h2 id="zoneHeading">East Zone</h2>
+      <p class="details-intro" id="zoneIntro">
+        Browse the floor plan and room equipment
+        information for the East Zone.
+      </p>
+
+      <div class="resource-grid">
+        <article class="resource">
+          <h3>⌖ Floor Plan</h3>
+          <p id="floorDescription">
+            View the floor plan and room locations
+            in the East Zone.
+          </p>
+          <a id="floorLink"
+            href="#"
+            onclick="return showLinkNotice(event, 'Floor Plan')">
+            View Floor Plan →
+          </a>
+        </article>
+
+        <article class="resource">
+          <h3>▣ Room Equipment</h3>
+          <p id="equipmentDescription">
+            Find room equipment details and available facilities.
+          </p>
+          <a id="equipmentLink"
+            href="#"
+            onclick="return showLinkNotice(event, 'Room Equipment')">
+            View Equipment →
+          </a>
+        </article>
+      </div>
+
+      <p class="note">
+        Room details and resource links can be updated
+        once the official information is ready.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const zoneData = {
+      east: {
+        title: "East Zone",
+        intro: "Browse the floor plan and room equipment information for the East Zone.",
+        floor: "View the floor plan and room locations in the East Zone.",
+        equipment: "Find room equipment details and available facilities."
+      },
+      west: {
+        title: "West Zone",
+        intro: "Browse the floor plan and room equipment information for the West Zone.",
+        floor: "View the floor plan and room locations in the West Zone.",
+        equipment: "Find room equipment details and available facilities."
+      }
+    };
+
+    function selectZone(zone) {
+      const data = zoneData[zone];
+      const isEast = zone === "east";
+
+      document.getElementById("eastCard")
+        .classList.toggle("active", isEast);
+      document.getElementById("westCard")
+        .classList.toggle("active", !isEast);
+
+      document.getElementById("eastCard")
+        .setAttribute("aria-pressed", String(isEast));
+      document.getElementById("westCard")
+        .setAttribute("aria-pressed", String(!isEast));
+
+      document.getElementById("eastLabel").hidden = !isEast;
+      document.getElementById("westLabel").hidden = isEast;
+
+      document.getElementById("zoneHeading").textContent = data.title;
+      document.getElementById("zoneIntro").textContent = data.intro;
+      document.getElementById("floorDescription").textContent = data.floor;
+      document.getElementById("equipmentDescription").textContent =
+        data.equipment;
+    }
+
+    function showLinkNotice(event, resource) {
+      event.preventDefault();
+      alert(
+        resource + " link has not been added yet. " +
+        "Please add the official resource URL first."
+      );
+      return false;
+    }
+  </script>
+</body>
+</html>
